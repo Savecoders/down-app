@@ -61,13 +61,13 @@ export default function Screen() {
             </View>
             <View className='items-center'>
               <Text className='text-sm text-muted-foreground'>Species</Text>
-              <Text className='text-xl font-semibold'>Human</Text>
+              <Text className='text-xl font-semibold'>Humano</Text>
             </View>
           </View>
         </CardContent>
         <CardFooter className='flex-col gap-3 pb-0'>
           <View className='flex-row items-center overflow-hidden'>
-            <Text className='text-sm text-muted-foreground'>Productivity:</Text>
+            <Text className='text-sm text-muted-foreground'>Productivitys</Text>
             <LayoutAnimationConfig skipEntering>
               <Animated.View
                 key={progress}

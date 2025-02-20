@@ -37,7 +37,7 @@ function Indicator({ value, className }: { value: number | undefined | null; cla
     return {
       width: withSpring(
         `${interpolate(progress.value, [0, 100], [1, 100], Extrapolation.CLAMP)}%`,
-        { overshootClamping: true }
+        { overshootClamping: true },
       ),
     };
   });
