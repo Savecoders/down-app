@@ -28,7 +28,7 @@ const buttonVariants = cva(
       variant: 'default',
       size: 'default',
     },
-  }
+  },
 );
 
 const buttonTextVariants = cva(
@@ -54,7 +54,7 @@ const buttonTextVariants = cva(
       variant: 'default',
       size: 'default',
     },
-  }
+  },
 );
 
 type ButtonProps = React.ComponentPropsWithoutRef<typeof Pressable> &
@@ -66,13 +66,13 @@ const Button = React.forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>
       <TextClassContext.Provider
         value={cn(
           props.disabled && 'web:pointer-events-none',
-          buttonTextVariants({ variant, size })
+          buttonTextVariants({ variant, size }),
         )}
       >
         <Pressable
           className={cn(
             props.disabled && 'opacity-50 web:pointer-events-none',
-            buttonVariants({ variant, size, className })
+            buttonVariants({ variant, size, className }),
           )}
           ref={ref}
           role='button'
@@ -80,7 +80,7 @@ const Button = React.forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>
         />
       </TextClassContext.Provider>
     );
-  }
+  },
 );
 Button.displayName = 'Button';
 
