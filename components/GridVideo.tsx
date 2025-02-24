@@ -1,13 +1,15 @@
 import { View, Text } from 'react-native';
 import React from 'react';
 import CoverVideo from './CoverVideo';
-import { VideoInfo } from '~/core/youtube';
+import { VideoInfo } from '~/api/youtube';
 
 interface GridVideoProps {
   videos: VideoInfo[];
+  onDownload: (video: VideoInfo) => Promise<void>;
+  isDownloading?: boolean;
 }
 
-export default function GridVideo({ videos }: GridVideoProps) {
+export default function GridVideo({ videos, onDownload, isDownloading }: GridVideoProps) {
   return (
     <View className='flex flex-col gap-8'>
       {/* <CoverVideo
@@ -21,6 +23,9 @@ export default function GridVideo({ videos }: GridVideoProps) {
           title={video.title}
           thumbnail={video.thumbnail}
           duration={video.duration}
+          url={video.url}
+          onDownload={onDownload}
+          isDownloading={isDownloading}
         />
       ))}
     </View>
