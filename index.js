@@ -1,7 +1,9 @@
 import { registerRootComponent } from 'expo';
 import { ExpoRoot } from 'expo-router';
+import { Asset } from 'expo-asset';
 
-// https://docs.expo.dev/router/reference/troubleshooting/#expo_router_app_root-not-defined
+// Register assets
+Asset.loadAsync(require('expo-router/assets/unmatched.png'));
 
 // Must be exported or Fast Refresh won't update the context
 export function App() {
