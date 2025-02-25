@@ -7,7 +7,6 @@ import { Download } from '../lib/icons/Download';
 import { LoaderCircleIcon } from '../lib/icons/LoaderCircleIcon';
 import { RefreshCw } from '../lib/icons/RefreshCw';
 import { Separator } from '~/components/ui/separator';
-import { getVideoInfo, getPlaylistInfo, downloadVideo, type VideoInfo } from '../api/youtube';
 
 import { H3, H4, P } from '~/components/ui/typography';
 import {
@@ -42,6 +41,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Skeleton } from '~/components/ui/skeleton';
+import { downloadVideo, VideoInfo } from '~/api/youtube';
 
 export default function Screen() {
   const inputRef = React.useRef<TextInput>(null);
@@ -77,18 +77,16 @@ export default function Screen() {
       setShowError(true);
     }
   }, [searchError, downloadError]);
-  // const handleDownloadAllVideos = async (video: VideoInfo) => {
-  //   try {
-  //     setLoadingDownload(true);
-  //     setError(null);
-  //     await downloadVideo(video.url);
-  //   } catch (error) {
-  //     setError('Failed to download video');
-  //     setShowError(true);
-  //   } finally {
-  //     setLoadingDownload(false);
-  //   }
-  // };
+  const handleDownloadAllVideos = async (videos: VideoInfo[]) => {
+    try {
+      for (const video of videos) {
+        await handleDownload(video);
+      }
+    } catch (error) {
+      setShowError(true);
+    } finally {
+    }
+  };
 
   const onChangedText = (text: string) => {
     setValue(text);
@@ -128,18 +126,18 @@ export default function Screen() {
 
           {videos && (
             <>
+              <View className='relative flex items-center'>
+                <Separator decorative={true} className='absolute w-full top-1/2' />
+                <P className='px-4 bg-background relative z-10 text-zinc-400'>
+                  Videos Result ({videos.length || 0})
+                </P>
+              </View>
               {Array.isArray(videos) && videos.length > 1 && !isSearching && (
                 <Button
                   className='w-full native:h-14 items-center justify-center flex flex-row gap-2 animate-accordion-down '
                   variant='outline'
-                  onPress={() => {}}
+                  onPress={() => handleDownloadAllVideos(videos)}
                 >
-                  <View className='relative flex items-center'>
-                    <Separator decorative={true} className='absolute w-full top-1/2' />
-                    <P className='px-4 bg-background relative z-10 text-zinc-400'>
-                      Videos Result ({videos.length || 0})
-                    </P>
-                  </View>
                   <P className='text-white'>Download all Videos</P>
                   <Download className='native:w-6 native:h-6 dark:text-white text-zinc-900' />
                 </Button>

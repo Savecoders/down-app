@@ -5,4 +5,4 @@ export { Sun } from './Sun';
 export { Search } from './Search';
 export { RefreshCw } from './RefreshCw';
 export { X } from './X';
-export { LoaderCircle } from './LoaderCircle';
+export { LoaderCircleIcon } from './LoaderCircleIcon';
