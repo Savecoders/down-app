@@ -31,7 +31,7 @@ export default function CoverVideo({
           resizeMode='cover'
         />
         <View className='flex flex-row items-center justify-between'>
-          <CardTitle className='flex-1'>{title}</CardTitle>
+          <CardTitle className='flex-1 text-zinc-700 dark:text-zinc-300'>{title}</CardTitle>
           <Button
             className='w-12'
             variant='ghost'

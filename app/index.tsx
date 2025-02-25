@@ -4,8 +4,7 @@ import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { Download } from '../lib/icons/Download';
-import { Search } from '../lib/icons/Search';
-import { LoaderCircle } from '../lib/icons/LoaderCircle';
+import { LoaderCircleIcon } from '../lib/icons/LoaderCircleIcon';
 import { RefreshCw } from '../lib/icons/RefreshCw';
 import { Separator } from '~/components/ui/separator';
 import { getVideoInfo, getPlaylistInfo, downloadVideo, type VideoInfo } from '../api/youtube';
@@ -33,6 +32,16 @@ import {
 import { useVideoDownload } from '~/hooks/useVideoDownload';
 import { useVideoSearch } from '~/hooks/useVideoSearch';
 import { DownloadProgress } from '~/components/DownloadPogress';
+import Animated, {
+  Easing,
+  BaseAnimationBuilder,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
+import { Skeleton } from '~/components/ui/skeleton';
 
 export default function Screen() {
   const inputRef = React.useRef<TextInput>(null);
@@ -49,6 +58,19 @@ export default function Screen() {
 
   const [showError, setShowError] = React.useState(false);
   const [url, setUrl] = React.useState('');
+
+  // animation
+  const duration = 2000;
+  const easing = Easing.bezier(0.25, -0.5, 0.25, 1);
+  const rotation = useSharedValue<number>(0);
+
+  React.useEffect(() => {
+    rotation.value = withRepeat(withTiming(1, { duration, easing }), -1);
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotation.value * 360}deg` }],
+  }));
 
   React.useEffect(() => {
     if (searchError || downloadError) {
@@ -88,11 +110,12 @@ export default function Screen() {
             <Button
               className='w-14 native:h-14'
               variant='default'
-              disabled={isSearching}
               onPress={() => searchVideo(value)}
             >
               {isSearching ? (
-                <LoaderCircle className='native:w-6 native:h-6 dark:text-zinc-900 text-white animate-spin' />
+                <Animated.View style={animatedStyle}>
+                  <LoaderCircleIcon className='native:w-6 native:h-6 dark:text-zinc-900 text-white' />
+                </Animated.View>
               ) : (
                 <RefreshCw className='native:w-6 native:h-6 dark:text-zinc-900 text-white' />
               )}
@@ -101,30 +124,34 @@ export default function Screen() {
 
           {/* Results to fetching videos */}
 
+          {isSearching && <Skeleton className='h-48 w-full' />}
+
           {videos && (
             <>
-              <View className='relative flex items-center'>
-                <Separator decorative={true} className='absolute w-full top-1/2' />
-                <P className='px-4 bg-background relative z-10 text-zinc-400'>Videos Result (1)</P>
-              </View>
-
-              {Array.isArray(videos) && videos.length > 1 && (
+              {Array.isArray(videos) && videos.length > 1 && !isSearching && (
                 <Button
                   className='w-full native:h-14 items-center justify-center flex flex-row gap-2 animate-accordion-down '
                   variant='outline'
                   onPress={() => {}}
                 >
+                  <View className='relative flex items-center'>
+                    <Separator decorative={true} className='absolute w-full top-1/2' />
+                    <P className='px-4 bg-background relative z-10 text-zinc-400'>
+                      Videos Result ({videos.length || 0})
+                    </P>
+                  </View>
                   <P className='text-white'>Download all Videos</P>
                   <Download className='native:w-6 native:h-6 dark:text-white text-zinc-900' />
                 </Button>
               )}
-              {
+
+              {!isSearching && (
                 <GridVideo
                   videos={videos}
                   onDownload={handleDownload}
                   isDownloading={isDownloading}
                 />
-              }
+              )}
             </>
           )}
 
