@@ -1,7 +1,7 @@
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 
-const API_BASE_URL = 'http://192.168.100.15:3000';
+const API_BASE_URL = 'https://wake-resistance-statutory-complaints.trycloudflare.com';
 
 export interface VideoInfo {
   title: string;
@@ -13,14 +13,12 @@ export interface VideoInfo {
 export async function getVideoInfo(url: string): Promise<VideoInfo> {
   try {
     const url_with_api = `${API_BASE_URL}/api/info?url=${url}`;
-    console.log('url_with_api', url_with_api);
     const video = await fetch(url_with_api, {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
     });
-    console.log('video', video);
     const videoInfo = await video.json();
     return {
       title: videoInfo.title,
@@ -29,7 +27,6 @@ export async function getVideoInfo(url: string): Promise<VideoInfo> {
       url: videoInfo.url,
     };
   } catch (error) {
-    console.log('error', error);
     throw new Error(`Failed to get video info: ${error}`);
   }
 }
@@ -118,7 +115,6 @@ export async function downloadVideo(
 
     // Signal full completion
     onProgress?.(100);
-    console.log('Video guardado en Descargas:', asset.uri);
   } catch (error) {
     // Reset progress on error
     onProgress?.(0);
