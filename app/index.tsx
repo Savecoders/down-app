@@ -50,7 +50,6 @@ export default function Screen() {
 
   const {
     isLoading: isDownloading,
-    progress,
     error: downloadError,
     currentVideo,
     handleDownload,
@@ -154,11 +153,7 @@ export default function Screen() {
           )}
 
           {/* DownloadProgress */}
-          <DownloadProgress
-            open={isDownloading}
-            progress={progress}
-            fileName={currentVideo?.title || ''}
-          />
+          <DownloadProgress open={isDownloading} fileName={currentVideo?.title || ''} />
         </View>
       </ScrollView>
 
