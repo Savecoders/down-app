@@ -1,18 +1,18 @@
 import * as React from 'react';
-import { P, H4 } from './ui/typography';
+import { Text } from 'react-native';
+import { useDownloadStore } from '~/stores/DownloadStore';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from './ui/dialog';
 import { Progress } from './ui/progress';
-import { View } from 'lucide-react-native';
+import { H4 } from './ui/typography';
 import Animated, { FadeInUp, FadeOutDown, LayoutAnimationConfig } from 'react-native-reanimated';
-import { Text } from 'react-native';
 
 interface DownloadProgressProps {
   open: boolean;
-  progress: number;
   fileName: string;
   onCancel?: () => void;
 }
-export function DownloadProgress({ open, progress, fileName }: DownloadProgressProps) {
+export function DownloadProgress({ open, fileName }: DownloadProgressProps) {
+  const progress = useDownloadStore(state => state.progress);
   const safeProgress = Math.max(0, Math.min(progress, 100));
 
   const getStatus = (progress: number) => {
@@ -23,10 +23,7 @@ export function DownloadProgress({ open, progress, fileName }: DownloadProgressP
   };
 
   const displayName = React.useMemo(() => {
-    if (fileName.length > 50) {
-      return fileName.substring(0, 47) + '...';
-    }
-    return fileName;
+    return fileName.length > 50 ? fileName.substring(0, 47) + '...' : fileName;
   }, [fileName]);
 
   return (

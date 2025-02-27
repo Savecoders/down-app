@@ -1,56 +1,36 @@
-import { useState } from 'react';
+import { useDownloadStore } from '~/stores/DownloadStore';
 import { downloadVideo, VideoInfo } from '~/api/youtube';
-
-interface DownloadState {
-  isLoading: boolean;
-  progress: number;
-  error: string | null;
-  currentVideo: VideoInfo | null;
-}
+import React from 'react';
 
 export function useVideoDownload() {
-  const [state, setState] = useState<DownloadState>({
-    isLoading: false,
-    progress: 0,
-    error: null,
-    currentVideo: null,
-  });
+  const setProgress = useDownloadStore(state => state.setProgress);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const [currentVideo, setCurrentVideo] = React.useState<VideoInfo | null>(null);
 
   const handleDownload = async (video: VideoInfo) => {
-    if (state.isLoading) return; // Prevent multiple downloads
-
-    setState(prev => ({
-      ...prev,
-      isLoading: true,
-      currentVideo: video,
-      error: null,
-      progress: 0,
-    }));
+    if (isLoading) return;
+    setIsLoading(true);
+    setCurrentVideo(video);
+    setError(null);
+    setProgress(0);
 
     try {
       await downloadVideo(video.url, progress => {
-        setState(prev => ({
-          ...prev,
-          progress: Math.max(0, Math.min(progress, 100)),
-        }));
+        setProgress(Math.max(0, Math.min(progress, 100)));
       });
     } catch (error) {
-      setState(prev => ({
-        ...prev,
-        error: error instanceof Error ? error.message : 'Failed to download video',
-      }));
+      setError(error instanceof Error ? error.message : 'Failed to download video');
     } finally {
-      setState(prev => ({
-        ...prev,
-        isLoading: false,
-        progress: 0,
-        currentVideo: null,
-      }));
+      setIsLoading(false);
+      setCurrentVideo(null);
     }
   };
 
   return {
-    ...state,
+    isLoading,
+    error,
+    currentVideo,
     handleDownload,
   };
 }
